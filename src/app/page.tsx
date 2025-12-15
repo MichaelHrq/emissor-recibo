@@ -105,7 +105,7 @@ export default function Home() {
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Emissor de Recibo</h1>
           </div>
           <p className="text-cyan-100 text-sm sm:text-base opacity-90">
-            Preencha os dados abaixo para gerar um PDF profissional no padrão A4.
+            Preencha os dados abaixo para gerar recibos personalizados em PDF.
           </p>
         </div>
 
@@ -327,14 +327,14 @@ export default function Home() {
                     disabled={loading}
                     className={`
                       w-full md:w-auto min-w-[250px] flex items-center justify-center gap-3
-                      px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all
-                      ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-cyan-500 hover:to-blue-500'}
+                      px-8 py-4 rounded-xl font-bold text-lg duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all
+                      ${loading ? 'bg-slate-400 cursor-not-allowed' : 'bg-linear-to-r from-cyan-600 to-blue-600 text-white hover:from-cyan-500 hover:to-blue-500'}
                     `}
                   >
                     {loading ? 'Gerando Documento...' : (
                       <>
                         <FileDown size={24} />
-                        BAIXAR PDF A4
+                        GERAR RECIBO
                       </>
                     )}
                   </button>
@@ -351,7 +351,7 @@ export default function Home() {
       </div>
       
       <footer className="text-center text-slate-400 text-sm mt-8">
-        <p>© {new Date().getFullYear()} Gerador de Recibos • Silvestre Climatização</p>
+        <p>© {new Date().getFullYear()} • Gerador de Recibos • Michael Henrique</p>
       </footer>
     </div>
   );
