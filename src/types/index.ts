@@ -1,9 +1,9 @@
 // types.ts
 export interface InvoiceItem {
   id: string;
-  quantity: number;
+  quantity: string;
   description: string;
-  price: number;
+  price: string;
 }
 
 export interface InvoiceData {

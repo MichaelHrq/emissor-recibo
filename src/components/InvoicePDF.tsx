@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 });
 
 export const InvoicePDF: React.FC<{ data: InvoiceData }> = ({ data }) => {
-  const totalGeral = data.items.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+  const totalGeral = data.items.reduce((acc, item) => acc + (Number(item.quantity) * Number(item.price)), 0);
 
   return (
     <Document>
@@ -146,12 +146,12 @@ export const InvoicePDF: React.FC<{ data: InvoiceData }> = ({ data }) => {
               </View>
               <View style={styles.colUnit}>
                 <Text style={styles.cellText}>
-                  {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  {Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </Text>
               </View>
               <View style={styles.colTotal}>
                 <Text style={styles.cellText}>
-                  {(item.quantity * item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  {(Number(item.quantity) * Number(item.price)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </Text>
               </View>
             </View>
