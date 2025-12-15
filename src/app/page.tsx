@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { InputMask } from "@react-input/mask";
 
 // Importação dinâmica do PDF para evitar erros de SSR
 const PDFDownloadLink = dynamic(
@@ -91,7 +92,7 @@ export default function Home() {
     }
 
     // Limpa o formulário
-    setCurrentItem({ quantity: "", description: "", price: "" });
+    setCurrentItem({ quantity: "1", description: "", price: "0" });
   };
 
   // --- INICIAR EDIÇÃO ---
@@ -108,7 +109,7 @@ export default function Home() {
 
   const cancelEditing = () => {
     setEditingId(null);
-    setCurrentItem({ quantity: "", description: "", price: "" });
+    setCurrentItem({ quantity: "1", description: "", price: "0" });
   };
 
   const removeItem = (id: string) => {
@@ -122,7 +123,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-100 py-8 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden border border-slate-200">
-        
         {/* --- CABEÇALHO --- */}
         <div className="bg-linear-to-r from-cyan-600 to-blue-600 p-6 sm:p-8 text-white">
           <div className="flex items-center gap-3 mb-2">
@@ -137,7 +137,6 @@ export default function Home() {
         </div>
 
         <div className="p-6 sm:p-8 space-y-8">
-          
           {/* --- 1. DADOS DO CLIENTE --- */}
           <section>
             <h2 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b pb-2">
@@ -167,6 +166,7 @@ export default function Home() {
                 <input
                   name="clientCnpj"
                   value={data.clientCnpj}
+                  inputMode="numeric"
                   onChange={handleClientChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="000.000.000-00"
@@ -188,12 +188,15 @@ export default function Home() {
                 <label className="text-sm font-semibold text-slate-600">
                   Telefone / WhatsApp
                 </label>
-                <input
+                <InputMask
                   name="clientPhone"
+                  inputMode="numeric"
                   value={data.clientPhone}
                   onChange={handleClientChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="(00) 90000-0000"
+                  mask="(__) _____-____"
+                  replacement={{ _: /\d/ }}
                 />
               </div>
             </div>
@@ -217,7 +220,11 @@ export default function Home() {
               }`}
             >
               <div className="mb-2 flex justify-between items-center">
-                <span className={`text-xs font-bold uppercase ${editingId ? "text-blue-600" : "text-slate-500"}`}>
+                <span
+                  className={`text-xs font-bold uppercase ${
+                    editingId ? "text-blue-600" : "text-slate-500"
+                  }`}
+                >
                   {editingId ? "Editando Item Selecionado" : "Novo Item"}
                 </span>
                 {editingId && (
@@ -359,7 +366,8 @@ export default function Home() {
                           </td>
                           <td className="px-6 py-4 text-right font-bold text-slate-800">
                             {(
-                              (Number(item.quantity) || 0) * (Number(item.price) || 0)
+                              (Number(item.quantity) || 0) *
+                              (Number(item.price) || 0)
                             ).toLocaleString("pt-BR", {
                               style: "currency",
                               currency: "BRL",
@@ -398,7 +406,9 @@ export default function Home() {
                           {data.items
                             .reduce(
                               (acc, i) =>
-                                acc + (Number(i.price) || 0) * (Number(i.quantity) || 0),
+                                acc +
+                                (Number(i.price) || 0) *
+                                  (Number(i.quantity) || 0),
                               0
                             )
                             .toLocaleString("pt-BR", {
@@ -421,7 +431,9 @@ export default function Home() {
               <PDFDownloadLink
                 key={JSON.stringify(data)}
                 document={<InvoicePDF data={data} />}
-                fileName={`Recibo_${data.clientName.split(" ")[0] || "Cliente"}.pdf`}
+                fileName={`Recibo_${
+                  data.clientName.split(" ")[0] || "Cliente"
+                }.pdf`}
                 className="w-full md:w-auto"
               >
                 {({ loading }) => (
@@ -437,7 +449,9 @@ export default function Home() {
                       }
                     `}
                   >
-                    {loading ? "Gerando Documento..." : (
+                    {loading ? (
+                      "Gerando Documento..."
+                    ) : (
                       <>
                         <FileDown size={24} />
                         GERAR RECIBO
@@ -449,15 +463,17 @@ export default function Home() {
             )}
 
             {data.items.length === 0 && (
-               <p className="text-sm text-slate-400">
-                 Adicione itens para liberar o download.
-               </p>
+              <p className="text-sm text-slate-400">
+                Adicione itens para liberar o download.
+              </p>
             )}
           </div>
         </div>
       </div>
       <footer className="text-center text-slate-400 text-sm mt-8">
-        <p>© {new Date().getFullYear()} • Gerador de Recibos • Michael Henrique</p>
+        <p>
+          © {new Date().getFullYear()} • Gerador de Recibos • Michael Henrique
+        </p>
       </footer>
     </div>
   );
