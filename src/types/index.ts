@@ -1,4 +1,3 @@
-// types.ts
 export interface InvoiceItem {
   id: string;
   quantity: string;
@@ -11,5 +10,6 @@ export interface InvoiceData {
   clientAddress: string;
   clientPhone: string;
   clientCnpj: string;
+  serviceDate: string;
   items: InvoiceItem[];
 }
