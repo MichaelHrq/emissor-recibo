@@ -6,41 +6,224 @@ const PRIMARY_COLOR = '#29ABE2';
 const BORDER_COLOR = '#000000';
 
 const styles = StyleSheet.create({
-  page: { padding: 30, fontFamily: 'Helvetica', fontSize: 10, color: '#000' },
-  headerContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  logoSection: { flexDirection: 'column', alignItems: 'flex-start' },
-  logoImage: { width: 'auto', height: 150, marginBottom: 5, objectFit: 'contain' },
-  phoneText: { fontSize: 14, fontWeight: 'bold', textAlign: 'right' },
-  reciboTitle: { fontSize: 16, color: PRIMARY_COLOR, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 10, marginTop: 10 },
-  clientInfoContainer: { marginBottom: 15 },
-  infoRow: { flexDirection: 'row', marginBottom: 5, alignItems: 'flex-end' },
-  label: { width: 60, fontWeight: 'bold', fontSize: 9 },
-  valueLine: { flex: 1, borderBottomWidth: 1, borderBottomColor: '#000', paddingLeft: 5, fontSize: 10 },
-  tableContainer: { width: '100%', borderTopWidth: 1, borderLeftWidth: 1, borderColor: BORDER_COLOR, marginTop: 10 },
-  tableHeader: { flexDirection: 'row', backgroundColor: PRIMARY_COLOR, borderBottomWidth: 1, borderColor: BORDER_COLOR, height: 20, alignItems: 'center' },
-  headerText: { color: '#FFF', fontWeight: 'bold', fontSize: 9, textAlign: 'center', width: '100%' },
-  tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderColor: BORDER_COLOR, height: 20, alignItems: 'center' },
-  colQty: { width: '15%', borderRightWidth: 1, borderColor: BORDER_COLOR, height: '100%', justifyContent: 'center' },
-  colDesc: { width: '50%', borderRightWidth: 1, borderColor: BORDER_COLOR, height: '100%', justifyContent: 'center', paddingLeft: 5 },
-  colUnit: { width: '17.5%', borderRightWidth: 1, borderColor: BORDER_COLOR, height: '100%', justifyContent: 'center' },
-  colTotal: { width: '17.5%', borderRightWidth: 1, borderColor: BORDER_COLOR, height: '100%', justifyContent: 'center' },
-  cellText: { textAlign: 'center', fontSize: 9 },
+  page: { 
+    padding: 30, 
+    fontFamily: 'Helvetica', 
+    fontSize: 10, 
+    color: '#000' 
+  },
+  
+  // --- Título Principal ---
+  title: { 
+    fontSize: 16, 
+    color: PRIMARY_COLOR, 
+    fontWeight: 'bold', 
+    textAlign: 'center', 
+    marginBottom: 15,
+    textTransform: 'uppercase'
+  },
+
+  // --- Caixa de Cabeçalho da Empresa ---
+  headerBox: {
+    flexDirection: 'row',
+    border: `1px solid ${BORDER_COLOR}`,
+    height: 80,
+  },
+  logoCol: {
+    width: '25%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  logoImage: {
+    width: '90%',
+    maxHeight: 65,
+    objectFit: 'contain',
+  },
+  companyInfoCol: {
+    width: '50%',
+    borderLeft: `1px solid ${BORDER_COLOR}`,
+    borderRight: `1px solid ${BORDER_COLOR}`,
+    padding: 8,
+    justifyContent: 'center',
+  },
+  companyName: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  smallText: {
+    fontSize: 8,
+    color: '#333',
+  },
+  companyAddress: {
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  datesCol: {
+    width: '25%',
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  boldTextCenter: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 9,
+  },
+  textCenter: {
+    textAlign: 'center',
+    fontSize: 9,
+    marginBottom: 5,
+  },
+
+  // --- Caixa do Cliente ---
+  clientBox: {
+    border: `1px solid ${BORDER_COLOR}`,
+    padding: 8,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  clientLine: {
+    fontSize: 9,
+    marginBottom: 4,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+
+  // --- Tabela (ESTILO ORIGINAL RESTAURADO) ---
+  tableContainer: { 
+    width: '100%', 
+    borderTopWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: BORDER_COLOR, 
+  },
+  tableHeader: { 
+    flexDirection: 'row', 
+    backgroundColor: PRIMARY_COLOR, 
+    borderBottomWidth: 1, 
+    borderColor: BORDER_COLOR, 
+    minHeight: 25, 
+    alignItems: 'stretch' 
+  },
+  headerText: { 
+    color: '#FFF', 
+    fontWeight: 'bold', 
+    fontSize: 9, 
+    textAlign: 'center', 
+    width: '100%' 
+  },
+  tableRow: { 
+    flexDirection: 'row', 
+    borderBottomWidth: 1, 
+    borderColor: BORDER_COLOR, 
+    minHeight: 25, 
+    alignItems: 'stretch',
+  },
+  
+  // Colunas da Tabela com borda direita para formar a grade
+  colQty: { width: '15%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingVertical: 4 },
+  colDesc: { width: '50%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingHorizontal: 5, paddingVertical: 4 },
+  colUnit: { width: '17.5%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingVertical: 4 },
+  colTotal: { width: '17.5%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingVertical: 4 },
+
+  cellTextCenter: { textAlign: 'center', fontSize: 9 },
   cellTextLeft: { textAlign: 'left', fontSize: 9 },
-  totalRow: { flexDirection: 'row', backgroundColor: PRIMARY_COLOR, height: 25, alignItems: 'center', borderBottomWidth: 1, borderRightWidth: 1, borderColor: BORDER_COLOR },
-  totalLabel: { flex: 1, color: '#FFF', fontWeight: 'bold', fontSize: 12, textAlign: 'center' },
-  totalValueBox: { width: '17.5%', height: '100%', justifyContent: 'center', borderLeftWidth: 1, borderColor: BORDER_COLOR, backgroundColor: '#fff' },
-  footerSection: { marginTop: 30, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' },
-  pixContainer: { width: '40%', alignItems: 'center', border: `1px solid ${PRIMARY_COLOR}`, padding: 10, borderRadius: 5 },
-  pixTitle: { fontSize: 10, fontWeight: 'bold', color: PRIMARY_COLOR, marginBottom: 5 },
-  qrCode: { width: 100, height: 100 },
-  signatureContainer: { width: '50%', alignItems: 'center', marginTop: 40 },
-  signatureLine: { width: '100%', borderBottomWidth: 1, borderBottomColor: '#000', marginBottom: 5 },
-  signatureText: { fontSize: 9 }
+
+  // Linha de Total
+  totalRow: { 
+    flexDirection: 'row', 
+    backgroundColor: PRIMARY_COLOR, 
+    minHeight: 25, 
+    alignItems: 'stretch',
+    borderBottomWidth: 1, 
+    borderRightWidth: 1, 
+    borderColor: BORDER_COLOR 
+  },
+  totalLabelBox: {
+    width: '82.5%', // Ocupa o espaço das 3 primeiras colunas
+    justifyContent: 'center',
+    paddingRight: 10,
+  },
+  totalLabel: { 
+    color: '#FFF', 
+    fontWeight: 'bold', 
+    fontSize: 12, 
+    textAlign: 'center',
+  },
+  totalValueBox: { 
+    width: '17.5%', 
+    justifyContent: 'center', 
+    backgroundColor: '#fff', 
+    borderLeftWidth: 1,
+    borderColor: BORDER_COLOR,
+  },
+  totalValueText: {
+    fontWeight: 'bold', 
+    fontSize: 10,
+    textAlign: 'center'
+  },
+
+  // --- Rodapé (PIX e Banco) ---
+  footerSection: { 
+    marginTop: 30, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'stretch', 
+  },
+  qrCodeBox: {
+    width: '48%', 
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCodeImage: { 
+    width: 120, 
+    height: 120 
+  },
+  bankDetailsBox: {
+    width: '48%', 
+    justifyContent: 'center',
+    paddingLeft: 20,
+    borderLeftWidth: 1, 
+    borderColor: '#ccc',
+  },
+  bankTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: PRIMARY_COLOR, 
+  },
+  bankText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  bankLink: {
+    textDecoration: 'underline',
+  }
 });
 
+// Helper de Data
 const formatDateBR = (dateStr: string) => {
   if (!dateStr) return '';
   const [year, month, day] = dateStr.split('-');
+  return `${day}/${month}/${year}`;
+};
+
+// Adiciona 15 dias para a data de vencimento
+const getVencimento = (dateStr: string) => {
+  if (!dateStr) return '';
+  const date = new Date(`${dateStr}T00:00:00`);
+  date.setDate(date.getDate() + 15);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
@@ -53,91 +236,126 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
   const totalGeral = data.items.reduce((acc, item) => acc + (Number(item.quantity) * Number(item.price)), 0);
 
   const qrCodeUrl = pixPayload 
-    ? `https://quickchart.io/qr?text=${encodeURIComponent(pixPayload)}&size=150&margin=1` 
+    ? `https://quickchart.io/qr?text=${encodeURIComponent(pixPayload)}&size=200&margin=0` 
     : null;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.headerContainer}>
-          <View style={styles.logoSection}>
+        
+        <Text style={styles.title}>ORÇAMENTO</Text>
+
+        {/* Cabeçalho da Empresa */}
+        <View style={styles.headerBox}>
+          <View style={styles.logoCol}>
             <Image src="/logo-sc.jpeg" style={styles.logoImage} />
           </View>
-          <Text style={styles.phoneText}>92 99160-2490</Text>
-        </View>
-
-        <Text style={styles.reciboTitle}>RECIBO DE SERVIÇO</Text>
-
-        <View style={styles.clientInfoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>CLIENTE</Text>
-            <Text style={styles.valueLine}>{data.clientName}</Text>
+          
+          <View style={styles.companyInfoCol}>
+            <Text style={styles.companyName}>Silvestre Climatização</Text>
+            <View style={styles.rowBetween}>
+              <Text style={styles.smallText}>Cnpj: 66.543.983/0001-10</Text>
+              <Text style={styles.smallText}>(92) 9160-2490</Text>
+            </View>
+            <Text style={styles.companyAddress}>R. Jacamim, 324 - Tarumã - Manaus-AM</Text>
+            <Text style={styles.smallText}>Cep: 69021-530</Text>
           </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>ENDEREÇO</Text>
-            <Text style={styles.valueLine}>{data.clientAddress}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>FONE</Text>
-            <Text style={styles.valueLine}>{data.clientPhone}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>CNPJ/CPF</Text>
-            <Text style={styles.valueLine}>{data.clientCnpj}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>DATA</Text>
-            <Text style={styles.valueLine}>{formatDateBR(data.serviceDate)}</Text>
+          
+          <View style={styles.datesCol}>
+            <Text style={styles.boldTextCenter}>Data de criação</Text>
+            <Text style={styles.textCenter}>{formatDateBR(data.serviceDate)}</Text>
+            
+            <Text style={styles.boldTextCenter}>Data de vencimento</Text>
+            <Text style={styles.textCenter}>{getVencimento(data.serviceDate)}</Text>
           </View>
         </View>
 
+        {/* Dados do Cliente */}
+        <View style={styles.clientBox}>
+          <Text style={styles.clientLine}>
+            <Text style={styles.boldText}>{data.clientName || 'Nome não informado'}</Text>
+          </Text>
+          <Text style={styles.clientLine}>
+            <Text style={styles.smallText}>CNPJ|CPF: {data.clientCnpj || 'Não informado'}</Text>
+          </Text>
+          <Text style={[styles.clientLine, { marginTop: 2 }]}>
+            <Text style={styles.boldText}>{data.clientAddress || 'Endereço não informado'}</Text>
+          </Text>
+        </View>
+
+        {/* Tabela de Serviços */}
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
-            <View style={styles.colQty}><Text style={styles.headerText}>QUANTIDADE</Text></View>
-            <View style={styles.colDesc}><Text style={styles.headerText}>DESCRIÇÃO</Text></View>
-            <View style={styles.colUnit}><Text style={styles.headerText}>VL. UNIT</Text></View>
-            <View style={styles.colTotal}><Text style={styles.headerText}>VALOR TOTAL</Text></View>
+            <View style={styles.colQty}>
+              <Text style={styles.headerText}>QUANTIDADE</Text>
+            </View>
+            <View style={styles.colDesc}>
+              <Text style={styles.headerText}>DESCRIÇÃO</Text>
+            </View>
+            <View style={styles.colUnit}>
+              <Text style={styles.headerText}>VL. UNIT</Text>
+            </View>
+            <View style={styles.colTotal}>
+              <Text style={styles.headerText}>VALOR TOTAL</Text>
+            </View>
           </View>
 
           {data.items.map((item) => (
             <View style={styles.tableRow} key={item.id}>
               <View style={styles.colQty}>
-                <Text style={styles.cellText}>{item.quantity}</Text>
+                <Text style={styles.cellTextCenter}>{item.quantity}</Text>
               </View>
               <View style={styles.colDesc}>
                 <Text style={styles.cellTextLeft}>{item.description}</Text>
               </View>
               <View style={styles.colUnit}>
-                <Text style={styles.cellText}>
-                  {Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                <Text style={styles.cellTextCenter}>
+                  {Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Text>
               </View>
               <View style={styles.colTotal}>
-                <Text style={styles.cellText}>
-                  {(Number(item.quantity) * Number(item.price)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                <Text style={styles.cellTextCenter}>
+                  {(Number(item.quantity) * Number(item.price)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Text>
               </View>
             </View>
           ))}
 
+          {/* Linha do Total */}
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>TOTAL</Text>
-            <View style={styles.totalValueBox}>
-               <Text style={[styles.cellText, { fontWeight: 'bold' }]}>
-                 {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-               </Text>
-            </View>
+             <View style={styles.totalLabelBox}>
+                <Text style={styles.totalLabel}>TOTAL</Text>
+             </View>
+             <View style={styles.totalValueBox}>
+                <Text style={styles.totalValueText}>
+                  {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </Text>
+             </View>
           </View>
         </View>
 
+        {/* Rodapé: QR Code e Dados Bancários */}
         <View style={styles.footerSection}>
           {qrCodeUrl && (
-            <View style={styles.pixContainer}>
-              <Text style={styles.pixTitle}>PAGUE VIA PIX</Text>
-              <Image src={qrCodeUrl} style={styles.qrCode} />
+            <View style={styles.qrCodeBox}>
+              <Image src={qrCodeUrl} style={styles.qrCodeImage} />
             </View>
           )}
+
+          <View style={styles.bankDetailsBox}>
+            <Text style={styles.bankTitle}>Dados bancários</Text>
+            <Text style={styles.bankText}>
+              Agência: {process.env.NEXT_PUBLIC_BANK_AGENCY}
+            </Text>
+            <Text style={styles.bankText}>
+              Conta: {process.env.NEXT_PUBLIC_BANK_ACCOUNT}
+            </Text>
+            <Text style={styles.bankText}>
+              {process.env.NEXT_PUBLIC_BANK_NAME}
+            </Text>
+          </View>
         </View>
+
       </Page>
     </Document>
   );
