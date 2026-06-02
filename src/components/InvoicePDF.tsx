@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
     color: '#000' 
   },
   
-  // --- Título Principal ---
   title: { 
     fontSize: 16, 
     color: PRIMARY_COLOR, 
@@ -23,7 +22,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase'
   },
 
-  // --- Caixa de Cabeçalho da Empresa ---
   headerBox: {
     flexDirection: 'row',
     border: `1px solid ${BORDER_COLOR}`,
@@ -82,7 +80,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  // --- Caixa do Cliente ---
   clientBox: {
     border: `1px solid ${BORDER_COLOR}`,
     padding: 8,
@@ -97,7 +94,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // --- Tabela (ESTILO ORIGINAL RESTAURADO) ---
   tableContainer: { 
     width: '100%', 
     borderTopWidth: 1, 
@@ -127,7 +123,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   
-  // Colunas da Tabela com borda direita para formar a grade
   colQty: { width: '15%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingVertical: 4 },
   colDesc: { width: '50%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingHorizontal: 5, paddingVertical: 4 },
   colUnit: { width: '17.5%', borderRightWidth: 1, borderColor: BORDER_COLOR, justifyContent: 'center', paddingVertical: 4 },
@@ -136,7 +131,6 @@ const styles = StyleSheet.create({
   cellTextCenter: { textAlign: 'center', fontSize: 9 },
   cellTextLeft: { textAlign: 'left', fontSize: 9 },
 
-  // Linha de Total
   totalRow: { 
     flexDirection: 'row', 
     backgroundColor: PRIMARY_COLOR, 
@@ -147,7 +141,7 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR 
   },
   totalLabelBox: {
-    width: '82.5%', // Ocupa o espaço das 3 primeiras colunas
+    width: '82.5%', 
     justifyContent: 'center',
     paddingRight: 10,
   },
@@ -170,9 +164,26 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 
-  // --- Rodapé (PIX e Banco) ---
+  // --- Observações ---
+  observationsBox: {
+    marginTop: 15,
+    padding: 8,
+    border: `1px solid ${BORDER_COLOR}`,
+    backgroundColor: '#f9f9f9',
+  },
+  obsTitle: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: PRIMARY_COLOR,
+  },
+  obsText: {
+    fontSize: 9,
+    lineHeight: 1.4,
+  },
+
   footerSection: { 
-    marginTop: 30, 
+    marginTop: 20, 
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'stretch', 
@@ -209,14 +220,12 @@ const styles = StyleSheet.create({
   }
 });
 
-// Helper de Data
 const formatDateBR = (dateStr: string) => {
   if (!dateStr) return '';
   const [year, month, day] = dateStr.split('-');
   return `${day}/${month}/${year}`;
 };
 
-// Adiciona 15 dias para a data de vencimento
 const getVencimento = (dateStr: string) => {
   if (!dateStr) return '';
   const date = new Date(`${dateStr}T00:00:00`);
@@ -243,9 +252,11 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
     <Document>
       <Page size="A4" style={styles.page}>
         
-        <Text style={styles.title}>ORÇAMENTO</Text>
+        {/* TÍTULO DINÂMICO AQUI */}
+        <Text style={styles.title}>
+          {data.documentType === 'RECIBO' ? 'RECIBO' : 'ORÇAMENTO'}
+        </Text>
 
-        {/* Cabeçalho da Empresa */}
         <View style={styles.headerBox}>
           <View style={styles.logoCol}>
             <Image src="/logo-sc.jpeg" style={styles.logoImage} />
@@ -270,20 +281,18 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
           </View>
         </View>
 
-        {/* Dados do Cliente */}
         <View style={styles.clientBox}>
           <Text style={styles.clientLine}>
             <Text style={styles.boldText}>{data.clientName || 'Nome não informado'}</Text>
           </Text>
           <Text style={styles.clientLine}>
-            <Text style={styles.smallText}>CNPJ|CPF: {data.clientCnpj || 'Não informado'}</Text>
+            <Text style={styles.boldText}>CNPJ|CPF: {data.clientCnpj || 'Não informado'}</Text>
           </Text>
-          <Text style={[styles.clientLine, { marginTop: 2 }]}>
+          <Text style={[styles.clientLine, { marginTop: 4 }]}>
             <Text style={styles.boldText}>{data.clientAddress || 'Endereço não informado'}</Text>
           </Text>
         </View>
 
-        {/* Tabela de Serviços */}
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
             <View style={styles.colQty}>
@@ -301,7 +310,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
           </View>
 
           {data.items.map((item) => (
-            <View style={styles.tableRow} key={item.id}>
+            <View key={item.id} style={styles.tableRow}>
               <View style={styles.colQty}>
                 <Text style={styles.cellTextCenter}>{item.quantity}</Text>
               </View>
@@ -321,7 +330,6 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
             </View>
           ))}
 
-          {/* Linha do Total */}
           <View style={styles.totalRow}>
              <View style={styles.totalLabelBox}>
                 <Text style={styles.totalLabel}>TOTAL</Text>
@@ -334,7 +342,14 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
           </View>
         </View>
 
-        {/* Rodapé: QR Code e Dados Bancários */}
+        {/* Bloco de Observações Dinâmico */}
+        {data.observations && data.observations.trim() !== '' && (
+          <View style={styles.observationsBox}>
+            <Text style={styles.obsTitle}>Observações:</Text>
+            <Text style={styles.obsText}>{data.observations}</Text>
+          </View>
+        )}
+
         <View style={styles.footerSection}>
           {qrCodeUrl && (
             <View style={styles.qrCodeBox}>

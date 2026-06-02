@@ -36,6 +36,8 @@ export default function Home() {
     clientPhone: "",
     clientCnpj: "",
     serviceDate: getTodayDate(),
+    documentType: "ORCAMENTO",
+    observations: "",
     items: [],
   });
 
@@ -48,7 +50,8 @@ export default function Home() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleClientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Agora aceita tanto Input normal quanto Textarea
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
   };
@@ -107,48 +110,29 @@ export default function Home() {
 
 const handleGeneratePDF = async () => {
     setIsGenerating(true);
-    
     try {
-      // 1. Calcula o total da fatura somando (quantidade * preço) de todos os itens
-      const total = data.items.reduce(
-        (acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0), 
-        0
-      );
+      const total = data.items.reduce((acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0), 0);
       
-      // 2. Gera o payload do PIX dinâmico com o valor exato do recibo
-      const pixPayload = generateDynamicPix(
-        "56922230230",               // Chave PIX (CPF)
-        "SAMUEL DA SILVA SILVESTRE", // Nome do recebedor
-        "MANAUS",                    // Cidade
-        total                        // Valor total calculado acima
-      );
+      const pixPayload = generateDynamicPix(total);
 
-      // 3. Importa o gerador do React PDF dinamicamente (evita erros de SSR no Next.js)
       const { pdf } = await import('@react-pdf/renderer');
+      const blob = await pdf(<InvoicePDF data={data} pixPayload={pixPayload} />).toBlob();
 
-      // 4. Cria o documento PDF em memória
-      const blob = await pdf(
-        <InvoicePDF data={data} pixPayload={pixPayload} />
-      ).toBlob();
-
-      // 5. Cria um link temporário para forçar o download no navegador
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      // Define o nome do arquivo usando o primeiro nome do cliente
-      link.download = `Recibo_${data.clientName.split(" ")[0] || "Cliente"}.pdf`;
+      
+      const docName = data.documentType === 'RECIBO' ? 'Recibo' : 'Orcamento';
+      link.download = `${docName}_${data.clientName.split(" ")[0] || "Cliente"}.pdf`;
       document.body.appendChild(link);
       link.click();
       
-      // 6. Limpeza de memória removendo o link temporário
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
-      alert("Ocorreu um erro ao gerar o recibo.");
+      alert("Ocorreu um erro ao gerar o documento.");
     } finally {
-      // Libera o botão novamente, independentemente de sucesso ou erro
       setIsGenerating(false);
     }
   };
@@ -160,15 +144,43 @@ const handleGeneratePDF = async () => {
           <div className="flex items-center gap-3 mb-2">
             <Receipt className="w-8 h-8 opacity-90" />
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Emissor de Recibo
+              Emissor de Documentos
             </h1>
           </div>
           <p className="text-cyan-100 text-sm sm:text-base opacity-90">
-            Preencha os dados abaixo para gerar recibos personalizados em PDF.
+            Preencha os dados abaixo para gerar orçamentos ou recibos em PDF.
           </p>
         </div>
 
         <div className="p-6 sm:p-8 space-y-8">
+          
+          {/* TIPO DE DOCUMENTO */}
+          <div className="flex flex-col md:flex-row gap-3 md:gap-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <span className="font-bold text-slate-700 mr-2">Tipo de Documento:</span>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="radio" 
+                name="documentType" 
+                value="ORCAMENTO" 
+                checked={data.documentType === 'ORCAMENTO'} 
+                onChange={handleChange} 
+                className="w-4 h-4 text-cyan-600 focus:ring-cyan-500 cursor-pointer" 
+              />
+              <span className="font-medium text-slate-700">Orçamento</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="radio" 
+                name="documentType" 
+                value="RECIBO" 
+                checked={data.documentType === 'RECIBO'} 
+                onChange={handleChange} 
+                className="w-4 h-4 text-cyan-600 focus:ring-cyan-500 cursor-pointer" 
+              />
+              <span className="font-medium text-slate-700">Recibo</span>
+            </label>
+          </div>
+
           <section>
             <h2 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b pb-2">
               <span className="bg-cyan-100 text-cyan-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
@@ -183,8 +195,8 @@ const handleGeneratePDF = async () => {
                 <input
                   name="clientName"
                   value={data.clientName}
-                  onChange={handleClientChange}
-                  className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition placeholder:text-slate-400"
+                  onChange={handleChange}
+                  className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="Ex: João da Silva"
                 />
               </div>
@@ -194,7 +206,7 @@ const handleGeneratePDF = async () => {
                   name="clientCnpj"
                   value={data.clientCnpj}
                   inputMode="numeric"
-                  onChange={handleClientChange}
+                  onChange={handleChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="000.000.000-00"
                 />
@@ -205,7 +217,7 @@ const handleGeneratePDF = async () => {
                   type="date"
                   name="serviceDate"
                   value={data.serviceDate}
-                  onChange={handleClientChange}
+                  onChange={handleChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition"
                 />
               </div>
@@ -215,7 +227,7 @@ const handleGeneratePDF = async () => {
                   name="clientPhone"
                   inputMode="numeric"
                   value={data.clientPhone}
-                  onChange={handleClientChange}
+                  onChange={handleChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="(00) 90000-0000"
                   mask="(__) _____-____"
@@ -227,7 +239,7 @@ const handleGeneratePDF = async () => {
                 <input
                   name="clientAddress"
                   value={data.clientAddress}
-                  onChange={handleClientChange}
+                  onChange={handleChange}
                   className="w-full text-slate-800 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400"
                   placeholder="Rua, Número, Bairro, Cidade"
                 />
@@ -361,6 +373,22 @@ const handleGeneratePDF = async () => {
             </div>
           </section>
 
+          {/* SESSÃO 3: OBSERVAÇÕES */}
+          <section>
+            <h2 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b pb-2">
+              <span className="bg-cyan-100 text-cyan-700 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                3
+              </span>
+              Observações Adicionais
+            </h2>
+            <textarea
+              name="observations"
+              value={data.observations}
+              onChange={handleChange}
+              className="w-full text-slate-800 border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 outline-none transition placeholder:text-slate-400 min-h-[100px] resize-y"
+            />
+          </section>
+
           <div className="pt-4 border-t border-slate-100 flex flex-col items-center gap-4">
             {data.items.length > 0 ? (
               <button
@@ -371,12 +399,12 @@ const handleGeneratePDF = async () => {
                 {isGenerating ? (
                   <>
                     <Loader2 className="animate-spin" size={24} />
-                    Gerando Recibo...
+                    Gerando Documento...
                   </>
                 ) : (
                   <>
                     <FileDown size={24} />
-                    GERAR RECIBO
+                    GERAR DOCUMENTO
                   </>
                 )}
               </button>
@@ -386,8 +414,8 @@ const handleGeneratePDF = async () => {
           </div>
         </div>
       </div>
-      <footer className="text-center text-slate-400 text-sm mt-8">
-        <p>© {new Date().getFullYear()} • Gerador de Recibos • Michael Henrique</p>
+      <footer className="text-center text-slate-400 text-sm mt-8 pb-8">
+        <p>© {new Date().getFullYear()} • Gerador de Documentos • Michael Henrique</p>
       </footer>
     </div>
   );

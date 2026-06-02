@@ -11,5 +11,7 @@ export interface InvoiceData {
   clientPhone: string;
   clientCnpj: string;
   serviceDate: string;
+  documentType: "ORCAMENTO" | "RECIBO";
+  observations: string;
   items: InvoiceItem[];
 }

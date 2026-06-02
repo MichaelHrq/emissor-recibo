@@ -1,4 +1,9 @@
-export function generateDynamicPix(chave: string, nome: string, cidade: string, valor: number): string {
+export function generateDynamicPix(valor: number): string {
+
+  const chave = process.env.NEXT_PUBLIC_PIX_KEY || '00000000000';
+  const nome = process.env.NEXT_PUBLIC_PIX_NAME || 'MERCHANT NAME';
+  const cidade = process.env.NEXT_PUBLIC_PIX_CITY || 'MERCHANT CITY';
+
   const formatValue = (id: string, value: string) => {
     const length = value.length.toString().padStart(2, '0');
     return `${id}${length}${value}`;
