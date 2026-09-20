@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import QRCode from "qrcode";
 import { InvoiceData, InvoiceItem } from "@/types";
 import { InvoicePDF } from "@/components/InvoicePDF";
 import { generateDynamicPix } from "@/utils/pix";
@@ -112,11 +113,15 @@ const handleGeneratePDF = async () => {
     setIsGenerating(true);
     try {
       const total = data.items.reduce((acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0), 0);
-      
       const pixPayload = generateDynamicPix(total);
+      const qrCodeDataUrl = await QRCode.toDataURL(pixPayload, {
+        errorCorrectionLevel: "M",
+        margin: 0,
+        width: 200,
+      });
 
       const { pdf } = await import('@react-pdf/renderer');
-      const blob = await pdf(<InvoicePDF data={data} pixPayload={pixPayload} />).toBlob();
+      const blob = await pdf(<InvoicePDF data={data} qrCodeDataUrl={qrCodeDataUrl} />).toBlob();
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');

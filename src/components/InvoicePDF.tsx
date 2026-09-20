@@ -238,15 +238,11 @@ const getVencimento = (dateStr: string) => {
 
 interface InvoicePDFProps {
   data: InvoiceData;
-  pixPayload: string;
+  qrCodeDataUrl: string;
 }
 
-export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
+export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, qrCodeDataUrl }) => {
   const totalGeral = data.items.reduce((acc, item) => acc + (Number(item.quantity) * Number(item.price)), 0);
-
-  const qrCodeUrl = pixPayload 
-    ? `https://quickchart.io/qr?text=${encodeURIComponent(pixPayload)}&size=200&margin=0` 
-    : null;
 
   return (
     <Document>
@@ -265,7 +261,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
           <View style={styles.companyInfoCol}>
             <Text style={styles.companyName}>Silvestre Climatização</Text>
             <View style={styles.rowBetween}>
-              <Text style={styles.smallText}>Cnpj: 66.543.983/0001-10</Text>
+              <Text style={styles.smallText}>Cnpj: 68.989.057/0001-07</Text>
               <Text style={styles.smallText}>(92) 9160-2490</Text>
             </View>
             <Text style={styles.companyAddress}>R. Jacamim, 324 - Tarumã - Manaus-AM</Text>
@@ -351,9 +347,9 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ data, pixPayload }) => {
         )}
 
         <View style={styles.footerSection}>
-          {qrCodeUrl && (
+          {qrCodeDataUrl && (
             <View style={styles.qrCodeBox}>
-              <Image src={qrCodeUrl} style={styles.qrCodeImage} />
+              <Image src={qrCodeDataUrl} style={styles.qrCodeImage} />
             </View>
           )}
 

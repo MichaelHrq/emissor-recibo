@@ -1,51 +1,35 @@
-export function generateDynamicPix(valor: number): string {
+import { createStaticPix, hasError, parsePix } from "pix-utils";
 
-  const chave = process.env.NEXT_PUBLIC_PIX_KEY || '00000000000';
-  const nome = process.env.NEXT_PUBLIC_PIX_NAME || 'MERCHANT NAME';
-  const cidade = process.env.NEXT_PUBLIC_PIX_CITY || 'MERCHANT CITY';
-
-  const formatValue = (id: string, value: string) => {
-    const length = value.length.toString().padStart(2, '0');
-    return `${id}${length}${value}`;
-  };
-
-  const payloadFormat = '000201';
-  const merchantAccountInformation = formatValue('26', 
-    formatValue('00', 'BR.GOV.BCB.PIX') + 
-    formatValue('01', chave)
-  );
-  const merchantCategoryCode = formatValue('52', '0000');
-  const transactionCurrency = formatValue('53', '986');
-  const transactionAmount = valor > 0 ? formatValue('54', valor.toFixed(2)) : '';
-  const countryCode = formatValue('58', 'BR');
-  
-  const merchantName = formatValue('59', nome.substring(0, 25));
-  const merchantCity = formatValue('60', cidade.substring(0, 15));
-  const additionalDataField = formatValue('62', formatValue('05', '***'));
-
-  const payload = payloadFormat +
-    merchantAccountInformation +
-    merchantCategoryCode +
-    transactionCurrency +
-    transactionAmount +
-    countryCode +
-    merchantName +
-    merchantCity +
-    additionalDataField +
-    '6304';
-
-  let crc = 0xFFFF;
-  for (let i = 0; i < payload.length; i++) {
-    crc ^= payload.charCodeAt(i) << 8;
-    for (let j = 0; j < 8; j++) {
-      if ((crc & 0x8000) !== 0) {
-        crc = (crc << 1) ^ 0x1021;
-      } else {
-        crc = crc << 1;
-      }
-    }
+export function generateDynamicPix(valor = 0): string {
+  const payload = process.env.NEXT_PUBLIC_PIX_PAYLOAD?.trim();
+  if (!payload) {
+    throw new Error("NEXT_PUBLIC_PIX_PAYLOAD nao esta definido.");
   }
 
-  const crcHex = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-  return payload + crcHex;
+  const parsedPix = parsePix(payload);
+  if (hasError(parsedPix)) {
+    throw new Error(`Payload PIX invalido: ${parsedPix.message}`);
+  }
+
+  if (!("pixKey" in parsedPix)) {
+    throw new Error("Payload PIX invalido: o codigo nao e um PIX estatico.");
+  }
+
+  const pix = createStaticPix({
+    merchantName: parsedPix.merchantName,
+    merchantCity: parsedPix.merchantCity,
+    pixKey: parsedPix.pixKey,
+    transactionAmount: valor,
+    infoAdicional: parsedPix.infoAdicional,
+    txid: parsedPix.txid,
+    fss: parsedPix.fss,
+    urlRec: parsedPix.urlRec,
+    isTransactionUnique: parsedPix.oneTime,
+  });
+
+  if (hasError(pix)) {
+    throw new Error(`Nao foi possivel gerar o PIX: ${pix.message}`);
+  }
+
+  return pix.toBRCode();
 }
